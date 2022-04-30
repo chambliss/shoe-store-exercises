@@ -29,9 +29,28 @@ const Header = () => {
 const MainHeader = styled.div`
   padding: 0 32px;
   border-bottom: 1px solid ${COLORS.gray[300]};
+
+  height: 72px;
+  display: flex;
+  align-items: center;
+
+  ${'' /* This isn't exactly right, but I couldn't figure out how to keep the 
+  logo left-aligned while centering the nav. Tried a lot of different combos of 
+  align-items, justify-content, align-self, position: relative, position: 
+  absolute, etc etc... I could have looked it up but I'm trying 
+  to complete these exercises solely based on what I remember from the course. 
+  */}
+  justify-content: space-between;
+
+  ${'' /* When window is horizonally small, make it so the logo and nav aren't 
+  squished up against each other. */}
+  gap: 16px;  
 `;
 
-const Nav = styled.nav``;
+const Nav = styled.nav`
+  display: flex;
+  gap: 44px;
+`;
 
 const NavLink = styled.a`
   font-size: 1.125rem;

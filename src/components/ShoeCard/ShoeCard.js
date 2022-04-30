@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components/macro';
+import React from "react";
+import styled from "styled-components/macro";
 
-import { COLORS, WEIGHTS } from '../../constants';
-import { formatPrice, pluralize, isNewShoe } from '../../utils';
-import Spacer from '../Spacer';
+import { COLORS, WEIGHTS } from "../../constants";
+import { formatPrice, pluralize, isNewShoe } from "../../utils";
+import Spacer from "../Spacer";
 
 const ShoeCard = ({
   slug,
@@ -31,19 +31,31 @@ const ShoeCard = ({
       ? 'new-release'
       : 'default'
 
+  const tagContent =
+    variant === "on-sale"
+      ? "Sale"
+      : variant === "new-release"
+      ? "Just released!"
+      : null;
+
   return (
     <Link href={`/shoe/${slug}`}>
       <Wrapper>
         <ImageWrapper>
           <Image alt="" src={imageSrc} />
         </ImageWrapper>
+        {tagContent && <Tag variant={variant}>{tagContent}</Tag>}
         <Spacer size={12} />
-        <Row>
+        <Row isPriceRow>
           <Name>{name}</Name>
-          <Price>{formatPrice(price)}</Price>
+          {variant === "on-sale" ? (
+            <SalePrice price={salePrice}>{formatPrice(salePrice)}</SalePrice>
+          ) : (
+            <Price>{formatPrice(price)}</Price>
+          )}
         </Row>
         <Row>
-          <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
+          <ColorInfo>{pluralize("Color", numOfColors)}</ColorInfo>
         </Row>
       </Wrapper>
     </Link>
@@ -55,16 +67,57 @@ const Link = styled.a`
   color: inherit;
 `;
 
-const Wrapper = styled.article``;
+const Wrapper = styled.article`
+  flex: 1;
+
+  ${"" /* Needed in order to position the tags on the corner */}
+  position: relative;
+  ${
+    "" /* This isn't correct - they're supposed to grow and shrink as the window is resized, but if I don't set a max width, then it just fills up the whole column with one card. Setting flex-basis doesn't seem to do anything.*/
+  }
+  max-width: 340px;
+  margin-bottom: 36px;
+
+  display: flex;
+  flex-direction: column;
+`;
 
 const ImageWrapper = styled.div`
   position: relative;
 `;
 
-const Image = styled.img``;
+const Image = styled.img`
+  width: 100%;
+`;
+
+const Tag = styled.div`
+  font-family: "Raleway", sans-serif;
+  font-weight: ${WEIGHTS.bold};
+  line-height: 1.5;
+  font-size: 14px;
+  padding: 6px 8px;
+  color: white;
+
+  position: absolute;
+  top: 10px;
+  right: 0;
+
+  background-color: ${({ variant }) =>
+    variant === "new-release" ? COLORS.secondary : COLORS.primary};
+
+  width: fit-content;
+`;
 
 const Row = styled.div`
   font-size: 1rem;
+
+  ${"" /* If it's the name + price row on a ShoeCard, make it a flex row */}
+  ${({ isPriceRow }) =>
+    isPriceRow &&
+    `
+    display: flex;
+    justify-content: space-between;
+  `}
 `;
 
 const Name = styled.h3`
